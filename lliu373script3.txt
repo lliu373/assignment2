@@ -1,0 +1,58 @@
+-- File 3 - Queries
+
+SHOW databases;
+USE lliu373assign2db;
+SHOW TABLES;
+
+-- Querie 1
+SELECT patlname FROM patient;
+
+-- Querie 2
+SELECT DISTINCT patlname FROM patient;
+
+-- Querie 3
+SELECT * from doctor ORDER BY doclname;
+
+-- Querie 4
+SELECT hosname, hoscode FROM hospital WHERE nofbeds>1500;
+
+-- Querie 5
+SELECT doclname, docfname FROM doctor,hospital 
+WHERE doctor.hoscode = hospital.hoscode and
+hosname = 'St. Joseph';
+
+-- Querie 6
+SELECT patfname,patlname FROM patient WHERE patlname like 'G%';
+
+-- Querie 7
+SELECT patfname, patlname FROM patient, docpat, doctor WHERE 
+doctor.licensenumber = docpat.licensenumber and patient.ohip = docpat.ohip 
+and doclname = 'Clooney'; 
+
+-- Querie 8
+SELECT hosname, city, doclname FROM hospital, doctor 
+WHERE hospital.licensenumber = doctor.licensenumber; 
+
+-- Querie 9
+SELECT SUM(nofbeds) AS TotalNumberofBeds FROM hospital;
+
+-- Querie 10
+SELECT patfname, docfname FROM patient, doctor, 
+hospital, docpat WHERE doctor.licensenumber = docpat.licensenumber 
+and patient.ohip = docpat.ohip and hospital.hoscode = doctor.hoscode 
+and hospital.licensenumber = docpat.licensenumber; 
+
+-- Querie 11
+SELECT doclname, docfname FROM doctor, hospital 
+WHERE doctor.hoscode = hospital.hoscode
+and doctor.specialty = 'Surgeon' and hospital.hosname = 'Victoria';
+
+-- Querie 12
+SELECT DISTINCT docfname FROM doctor
+WHERE doctor.licensenumber NOT IN (SELECT licensenumber FROM docpat);
+
+-- Querie 13
+SELECT DISTINCT doclname, docfname FROM doctor, docpat WHERE 
+doctor.licensenumber = docpat.licensenumber 
+GROUP BY docpat.licensenumber HAVING COUNT(docpat.ohip)>1;
+

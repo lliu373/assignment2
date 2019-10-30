@@ -1,0 +1,129 @@
+Warning: Using a password on the command line interface can be insecure.
+--------------
+SHOW databases
+--------------
+
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| junkdb             |
+| lliu373assign2db   |
+| myfirstdb          |
+| mysql              |
+| performance_schema |
+| vetoffice          |
++--------------------+
+7 rows in set (0.00 sec)
+
+--------------
+DROP DATABASE IF EXISTS lliu373assign2db
+--------------
+
+Query OK, 5 rows affected (0.08 sec)
+
+--------------
+CREATE  DATABASE lliu373assign2db
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+GRANT USAGE ON *.* TO 'ta'@'localhost'
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+DROP USER 'ta'@'localhost'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+CREATE USER 'ta'@'localhost' IDENTIFIED BY 'cs3319'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+GRANT ALL PRIVILEGES ON yourwesternuseridassign2db.* TO 'ta'@'localhost'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+FLUSH PRIVILEGES
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+SHOW TABLES
+--------------
+
+Empty set (0.00 sec)
+
+--------------
+CREATE TABLE doctor (licensenumber CHAR(4) NOT NULL, 
+docfname VARCHAR(20), doclname VARCHAR(20), specialty VARCHAR(30), 
+beclis DATE, hoscode CHAR(3), PRIMARY KEY (licensenumber))
+--------------
+
+Query OK, 0 rows affected (0.05 sec)
+
+--------------
+CREATE TABLE patient (ohip CHAR(9) NOT NULL, patfname VARCHAR(20), 
+patlname VARCHAR(20), PRIMARY KEY (ohip))
+--------------
+
+Query OK, 0 rows affected (0.05 sec)
+
+--------------
+CREATE TABLE hospital (hosname VARCHAR(20), city VARCHAR(20), 
+province CHAR(2), nofbeds INT, hoscode CHAR(3) NOT NULL, 
+licensenumber CHAR(4), bechead DATE, PRIMARY KEY (hoscode))
+--------------
+
+Query OK, 0 rows affected (0.06 sec)
+
+--------------
+ALTER TABLE hospital ADD FOREIGN KEY (licensenumber)
+ REFERENCES doctor(licensenumber)
+--------------
+
+Query OK, 0 rows affected (0.25 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+CREATE TABLE docpat (licensenumber CHAR(4) NOT NULL, 
+ohip CHAR(9) NOT NULL, PRIMARY KEY (licensenumber, ohip),
+FOREIGN KEY (licensenumber) REFERENCES doctor(licensenumber)
+ ON DELETE CASCADE,FOREIGN KEY (ohip) REFERENCES patient(ohip)
+ ON DELETE CASCADE)
+--------------
+
+Query OK, 0 rows affected (0.18 sec)
+
+--------------
+AlTER TABLE doctor ADD FOREIGN KEY (hoscode) REFERENCES hospital(hoscode)
+--------------
+
+Query OK, 0 rows affected (0.13 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+SHOW TABLES
+--------------
+
++----------------------------+
+| Tables_in_lliu373assign2db |
++----------------------------+
+| docpat                     |
+| doctor                     |
+| hospital                   |
+| patient                    |
++----------------------------+
+4 rows in set (0.00 sec)
+
+Bye

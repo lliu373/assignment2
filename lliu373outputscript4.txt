@@ -1,0 +1,266 @@
+Warning: Using a password on the command line interface can be insecure.
+--------------
+SHOW databases
+--------------
+
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| junkdb             |
+| lliu373assign2db   |
+| myfirstdb          |
+| mysql              |
+| performance_schema |
+| vetoffice          |
++--------------------+
+7 rows in set (0.00 sec)
+
+--------------
+SHOW TABLES
+--------------
+
++----------------------------+
+| Tables_in_lliu373assign2db |
++----------------------------+
+| docpat                     |
+| doctor                     |
+| hospital                   |
+| patient                    |
++----------------------------+
+4 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM doctor
+--------------
+
++---------------+----------+------------+--------------+------------+---------+
+| licensenumber | docfname | doclname   | specialty    | beclis     | hoscode |
++---------------+----------+------------+--------------+------------+---------+
+| GD56          | Joey     | Shabado    | Podiatrist   | 1960-06-24 | BBC     |
+| HT45          | Ross     | Clooney    | Surgeon      | 1987-06-20 | DDE     |
+| JK78          | Mandy    | Webster    | Surgeon      | 1990-08-08 | BBC     |
+| MD85          | Daryl    | Gray       | Surgeon      | 1996-02-19 | ABC     |
+| RD34          | Bernie   | Kavorikian | Urologist    | 1980-09-09 | BBC     |
+| SE66          | Colleen  | Aziz       | Surgeon      | 1989-08-24 | ABC     |
+| YT67          | Ben      | Spock      | Pediatrician | 1955-02-20 | DDE     |
++---------------+----------+------------+--------------+------------+---------+
+7 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM hospital
+--------------
+
++------------+----------+----------+---------+---------+---------------+------------+
+| hosname    | city     | province | nofbeds | hoscode | licensenumber | bechead    |
++------------+----------+----------+---------+---------+---------------+------------+
+| Victoria   | London   | On       |    1600 | ABC     | SE66          | 1994-12-07 |
+| St. Joseph | London   | On       |    1000 | BBC     | GD56          | 1999-09-10 |
+| Victoria   | Victoria | BC       |    1200 | DDE     | YT67          | 1997-12-07 |
++------------+----------+----------+---------+---------+---------------+------------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM docpat
+--------------
+
++---------------+-----------+
+| licensenumber | ohip      |
++---------------+-----------+
+| GD56          | 110112113 |
+| HT45          | 111222111 |
+| JK78          | 111222333 |
+| SE66          | 111222333 |
+| HT45          | 250805734 |
+| GD56          | 333444555 |
+| HT45          | 444555666 |
+| JK78          | 444555666 |
+| GD56          | 667766777 |
+| HT45          | 667766777 |
++---------------+-----------+
+10 rows in set (0.00 sec)
+
+ERROR 1451 (23000) at line 8: Cannot delete or update a parent row: a foreign key constraint fails (`lliu373assign2db`.`hospital`, CONSTRAINT `hospital_ibfk_1` FOREIGN KEY (`licensenumber`) REFERENCES `doctor` (`licensenumber`))
+--------------
+DELETE FROM doctor WHERE beclis<'1965-01-01'
+--------------
+
+--------------
+CREATE VIEW vone AS SELECT patlname, patfname,doclname, hosname FROM doctor,
+ patient, hospital, docpat WHERE hospital.hoscode = hospital.hoscode 
+and doctor.licensenumber = docpat.licensenumber and patient.ohip = docpat.ohip 
+and hospital.licensenumber = doctor.licensenumber and bechead>'1995-12-31'
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+SELECT * FROM vone
+--------------
+
++----------+----------+----------+------------+
+| patlname | patfname | doclname | hosname    |
++----------+----------+----------+------------+
+| Gellar   | Bill     | Shabado  | St. Joseph |
+| Gellar   | Colleen  | Shabado  | St. Joseph |
+| Bing     | Scotty   | Shabado  | St. Joseph |
++----------+----------+----------+------------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM doctor
+--------------
+
++---------------+----------+------------+--------------+------------+---------+
+| licensenumber | docfname | doclname   | specialty    | beclis     | hoscode |
++---------------+----------+------------+--------------+------------+---------+
+| GD56          | Joey     | Shabado    | Podiatrist   | 1960-06-24 | BBC     |
+| HT45          | Ross     | Clooney    | Surgeon      | 1987-06-20 | DDE     |
+| JK78          | Mandy    | Webster    | Surgeon      | 1990-08-08 | BBC     |
+| MD85          | Daryl    | Gray       | Surgeon      | 1996-02-19 | ABC     |
+| RD34          | Bernie   | Kavorikian | Urologist    | 1980-09-09 | BBC     |
+| SE66          | Colleen  | Aziz       | Surgeon      | 1989-08-24 | ABC     |
+| YT67          | Ben      | Spock      | Pediatrician | 1955-02-20 | DDE     |
++---------------+----------+------------+--------------+------------+---------+
+7 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM docpat
+--------------
+
++---------------+-----------+
+| licensenumber | ohip      |
++---------------+-----------+
+| GD56          | 110112113 |
+| HT45          | 111222111 |
+| JK78          | 111222333 |
+| SE66          | 111222333 |
+| HT45          | 250805734 |
+| GD56          | 333444555 |
+| HT45          | 444555666 |
+| JK78          | 444555666 |
+| GD56          | 667766777 |
+| HT45          | 667766777 |
++---------------+-----------+
+10 rows in set (0.00 sec)
+
+--------------
+DELETE FROM doctor WHERE doclname = 'Clooney'
+--------------
+
+Query OK, 1 row affected (0.01 sec)
+
+--------------
+SELECT * FROM doctor
+--------------
+
++---------------+----------+------------+--------------+------------+---------+
+| licensenumber | docfname | doclname   | specialty    | beclis     | hoscode |
++---------------+----------+------------+--------------+------------+---------+
+| GD56          | Joey     | Shabado    | Podiatrist   | 1960-06-24 | BBC     |
+| JK78          | Mandy    | Webster    | Surgeon      | 1990-08-08 | BBC     |
+| MD85          | Daryl    | Gray       | Surgeon      | 1996-02-19 | ABC     |
+| RD34          | Bernie   | Kavorikian | Urologist    | 1980-09-09 | BBC     |
+| SE66          | Colleen  | Aziz       | Surgeon      | 1989-08-24 | ABC     |
+| YT67          | Ben      | Spock      | Pediatrician | 1955-02-20 | DDE     |
++---------------+----------+------------+--------------+------------+---------+
+6 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM docpat
+--------------
+
++---------------+-----------+
+| licensenumber | ohip      |
++---------------+-----------+
+| GD56          | 110112113 |
+| JK78          | 111222333 |
+| SE66          | 111222333 |
+| GD56          | 333444555 |
+| JK78          | 444555666 |
+| GD56          | 667766777 |
++---------------+-----------+
+6 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM hospital
+--------------
+
++------------+----------+----------+---------+---------+---------------+------------+
+| hosname    | city     | province | nofbeds | hoscode | licensenumber | bechead    |
++------------+----------+----------+---------+---------+---------------+------------+
+| Victoria   | London   | On       |    1600 | ABC     | SE66          | 1994-12-07 |
+| St. Joseph | London   | On       |    1000 | BBC     | GD56          | 1999-09-10 |
+| Victoria   | Victoria | BC       |    1200 | DDE     | YT67          | 1997-12-07 |
++------------+----------+----------+---------+---------+---------------+------------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM docpat
+--------------
+
++---------------+-----------+
+| licensenumber | ohip      |
++---------------+-----------+
+| GD56          | 110112113 |
+| JK78          | 111222333 |
+| SE66          | 111222333 |
+| GD56          | 333444555 |
+| JK78          | 444555666 |
+| GD56          | 667766777 |
++---------------+-----------+
+6 rows in set (0.00 sec)
+
+ERROR 1451 (23000) at line 39: Cannot delete or update a parent row: a foreign key 
+constraint fails (`lliu373assign2db`.`hospital`, CONSTRAINT `hospital_ibfk_1` FOREIGN 
+KEY (`licensenumber`) REFERENCES `doctor` (`licensenumber`))
+--------------
+DELETE FROM doctor WHERE specialty = 'Surgeon'
+--------------
+
+--------------
+SELECT * FROM doctor
+--------------
+
++---------------+----------+------------+--------------+------------+---------+
+| licensenumber | docfname | doclname   | specialty    | beclis     | hoscode |
++---------------+----------+------------+--------------+------------+---------+
+| GD56          | Joey     | Shabado    | Podiatrist   | 1960-06-24 | BBC     |
+| JK78          | Mandy    | Webster    | Surgeon      | 1990-08-08 | BBC     |
+| MD85          | Daryl    | Gray       | Surgeon      | 1996-02-19 | ABC     |
+| RD34          | Bernie   | Kavorikian | Urologist    | 1980-09-09 | BBC     |
+| SE66          | Colleen  | Aziz       | Surgeon      | 1989-08-24 | ABC     |
+| YT67          | Ben      | Spock      | Pediatrician | 1955-02-20 | DDE     |
++---------------+----------+------------+--------------+------------+---------+
+6 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM hospital
+--------------
+
++------------+----------+----------+---------+---------+---------------+------------+
+| hosname    | city     | province | nofbeds | hoscode | licensenumber | bechead    |
++------------+----------+----------+---------+---------+---------------+------------+
+| Victoria   | London   | On       |    1600 | ABC     | SE66          | 1994-12-07 |
+| St. Joseph | London   | On       |    1000 | BBC     | GD56          | 1999-09-10 |
+| Victoria   | Victoria | BC       |    1200 | DDE     | YT67          | 1997-12-07 |
++------------+----------+----------+---------+---------+---------------+------------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM docpat
+--------------
+
++---------------+-----------+
+| licensenumber | ohip      |
++---------------+-----------+
+| GD56          | 110112113 |
+| JK78          | 111222333 |
+| SE66          | 111222333 |
+| GD56          | 333444555 |
+| JK78          | 444555666 |
+| GD56          | 667766777 |
++---------------+-----------+
+6 rows in set (0.00 sec)
+
+Bye

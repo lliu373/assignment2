@@ -1,0 +1,54 @@
+-- File 4 - Deletions/Views
+
+SHOW databases;
+USE lliu373assign2db;
+SHOW TABLES;
+
+
+-- Delete any doctor who got his/her license before Jan 1, 1965:
+SELECT * FROM doctor;
+SELECT * FROM hospital;
+SELECT * FROM docpat;
+DELETE FROM doctor WHERE beclis<'1965-01-01';
+-- the delete command did not delete the rows because 
+-- the foreign key constraint fails in hospital table which 
+-- contain the foreign key of licensenumber with doctor table's
+-- licensenumberconnect.
+
+
+-- Create the view:
+CREATE VIEW vone AS SELECT patlname, patfname,doclname, hosname FROM doctor,
+ patient, hospital, docpat WHERE hospital.hoscode = hospital.hoscode 
+and doctor.licensenumber = docpat.licensenumber and patient.ohip = docpat.ohip 
+and hospital.licensenumber = doctor.licensenumber and bechead>'1995-12-31';
+-- Prove the view works:
+SELECT * FROM vone;
+
+
+-- Delete the doctor with a last name of Clooney:
+SELECT * FROM doctor;
+SELECT * FROM docpat;
+DELETE FROM doctor WHERE doclname = 'Clooney';
+-- The delete works because the foreign key include cascade in the treat table(docpat)
+-- and the doctor 'Clooney is not head of hospital so it is not 
+-- effect to hospital table wich contain foreign key without cascade.
+-- Cascade code from treat(docpat) table: CREATE TABLE docpat (licensenumber 
+-- CHAR(4) NOT NULL, ohip CHAR(9) NOT NULL, PRIMARY KEY (licensenumber, ohip), 
+-- FOREIGN KEY (licensenumber) REFERENCES doctor(licensenumber) 
+-- ON DELETE CASCADE,FOREIGN KEY (ohip) REFERENCES patient(ohip) ON DELETE CASCADE);
+SELECT * FROM doctor;
+SELECT * FROM docpat;
+
+
+-- Try to delete all the Surgeons:
+SELECT * FROM doctor;
+SELECT * FROM hospital;
+SELECT * FROM docpat;
+DELETE FROM doctor WHERE specialty = 'Surgeon'; 
+-- the delete command did not delete the rows because
+-- the foreign key constraint fails in hospital table which
+-- contain the foreign key of licensenumber with doctor table's
+-- licensenumberconnect.
+SELECT * FROM doctor;
+SELECT * FROM hospital;
+SELECT * FROM docpat;

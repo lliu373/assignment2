@@ -1,0 +1,224 @@
+Warning: Using a password on the command line interface can be insecure.
+--------------
+SHOW databases
+--------------
+
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| junkdb             |
+| lliu373assign2db   |
+| myfirstdb          |
+| mysql              |
+| performance_schema |
+| vetoffice          |
++--------------------+
+7 rows in set (0.00 sec)
+
+--------------
+SHOW TABLES
+--------------
+
++----------------------------+
+| Tables_in_lliu373assign2db |
++----------------------------+
+| docpat                     |
+| doctor                     |
+| hospital                   |
+| patient                    |
++----------------------------+
+4 rows in set (0.00 sec)
+
+--------------
+SELECT patlname FROM patient
+--------------
+
++----------+
+| patlname |
++----------+
+| Gellar   |
+| Brown    |
+| Green    |
+| Liu      |
+| Gellar   |
+| Gellar   |
+| Bing     |
++----------+
+7 rows in set (0.00 sec)
+
+--------------
+SELECT DISTINCT patlname FROM patient
+--------------
+
++----------+
+| patlname |
++----------+
+| Gellar   |
+| Brown    |
+| Green    |
+| Liu      |
+| Bing     |
++----------+
+5 rows in set (0.00 sec)
+
+--------------
+SELECT * from doctor ORDER BY doclname
+--------------
+
++---------------+----------+------------+--------------+------------+---------+
+| licensenumber | docfname | doclname   | specialty    | beclis     | hoscode |
++---------------+----------+------------+--------------+------------+---------+
+| SE66          | Colleen  | Aziz       | Surgeon      | 1989-08-24 | ABC     |
+| HT45          | Ross     | Clooney    | Surgeon      | 1987-06-20 | DDE     |
+| MD85          | Daryl    | Gray       | Surgeon      | 1996-02-19 | ABC     |
+| RD34          | Bernie   | Kavorikian | Urologist    | 1980-09-09 | BBC     |
+| GD56          | Joey     | Shabado    | Podiatrist   | 1960-06-24 | BBC     |
+| YT67          | Ben      | Spock      | Pediatrician | 1955-02-20 | DDE     |
+| JK78          | Mandy    | Webster    | Surgeon      | 1990-08-08 | BBC     |
++---------------+----------+------------+--------------+------------+---------+
+7 rows in set (0.00 sec)
+
+--------------
+SELECT hosname, hoscode FROM hospital WHERE nofbeds>1500
+--------------
+
++----------+---------+
+| hosname  | hoscode |
++----------+---------+
+| Victoria | ABC     |
++----------+---------+
+1 row in set (0.00 sec)
+
+--------------
+SELECT doclname, docfname FROM doctor,hospital 
+WHERE doctor.hoscode = hospital.hoscode and
+hosname = 'St. Joseph'
+--------------
+
++------------+----------+
+| doclname   | docfname |
++------------+----------+
+| Shabado    | Joey     |
+| Webster    | Mandy    |
+| Kavorikian | Bernie   |
++------------+----------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT patfname,patlname FROM patient WHERE patlname like 'G%'
+--------------
+
++----------+----------+
+| patfname | patlname |
++----------+----------+
+| Bill     | Gellar   |
+| Jon      | Green    |
+| Colleen  | Gellar   |
+| Sean     | Gellar   |
++----------+----------+
+4 rows in set (0.00 sec)
+
+--------------
+SELECT patfname, patlname FROM patient, docpat, doctor WHERE 
+doctor.licensenumber = docpat.licensenumber and patient.ohip = docpat.ohip 
+and doclname = 'Clooney'
+--------------
+
++----------+----------+
+| patfname | patlname |
++----------+----------+
+| Suzi     | Brown    |
+| Lei      | Liu      |
+| Sean     | Gellar   |
+| Scotty   | Bing     |
++----------+----------+
+4 rows in set (0.01 sec)
+
+--------------
+SELECT hosname, city, doclname FROM hospital, doctor 
+WHERE hospital.licensenumber = doctor.licensenumber
+--------------
+
++------------+----------+----------+
+| hosname    | city     | doclname |
++------------+----------+----------+
+| Victoria   | London   | Aziz     |
+| St. Joseph | London   | Shabado  |
+| Victoria   | Victoria | Spock    |
++------------+----------+----------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT SUM(nofbeds) AS TotalNumberofBeds FROM hospital
+--------------
+
++-------------------+
+| TotalNumberofBeds |
++-------------------+
+|              3800 |
++-------------------+
+1 row in set (0.00 sec)
+
+--------------
+SELECT patfname, docfname FROM patient, doctor, 
+hospital, docpat WHERE doctor.licensenumber = docpat.licensenumber 
+and patient.ohip = docpat.ohip and hospital.hoscode = doctor.hoscode 
+and hospital.licensenumber = docpat.licensenumber
+--------------
+
++----------+----------+
+| patfname | docfname |
++----------+----------+
+| Bill     | Joey     |
+| Colleen  | Joey     |
+| Scotty   | Joey     |
+| Jon      | Colleen  |
++----------+----------+
+4 rows in set (0.00 sec)
+
+--------------
+SELECT doclname, docfname FROM doctor, hospital 
+WHERE doctor.hoscode = hospital.hoscode
+and doctor.specialty = 'Surgeon' and hospital.hosname = 'Victoria'
+--------------
+
++----------+----------+
+| doclname | docfname |
++----------+----------+
+| Clooney  | Ross     |
+| Gray     | Daryl    |
+| Aziz     | Colleen  |
++----------+----------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT DISTINCT docfname FROM doctor
+WHERE doctor.licensenumber NOT IN (SELECT licensenumber FROM docpat)
+--------------
+
++----------+
+| docfname |
++----------+
+| Daryl    |
+| Bernie   |
+| Ben      |
++----------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT DISTINCT doclname, docfname FROM doctor, docpat WHERE 
+doctor.licensenumber = docpat.licensenumber 
+GROUP BY docpat.licensenumber HAVING COUNT(docpat.ohip)>1
+--------------
+
++----------+----------+
+| doclname | docfname |
++----------+----------+
+| Shabado  | Joey     |
+| Clooney  | Ross     |
+| Webster  | Mandy    |
++----------+----------+
+3 rows in set (0.00 sec)
+
+Bye
